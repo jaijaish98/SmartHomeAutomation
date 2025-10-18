@@ -1,121 +1,6 @@
-# Smart Home Automation - Computer Vision
+# Smart Home Automation
 
-Professional YOLO-based object detection system for real-time detection of 80+ object types.
-
-## 🚀 Quick Start
-
-### ⚡ One-Click Launch
-
-**macOS/Linux:**
-```bash
-cd object_detection
-./run.sh
-```
-
-**macOS (Double-Click):**
-Double-click `object_detection/START_OBJECT_DETECTION.command` in Finder
-
-**Windows:**
-```bash
-cd object_detection
-run.bat
-```
-
-**Cross-Platform:**
-```bash
-cd object_detection
-python run.py
-```
-
-That's it! The launcher automatically:
-- ✅ Installs dependencies
-- ✅ Downloads YOLO model (~23 MB, first time only)
-- ✅ Launches object detection
-
----
-
-## 🎯 Features
-
-- **80+ Object Types** - People, vehicles, animals, electronics, furniture, food, and more
-- **High Accuracy** - 90-95% detection accuracy using YOLO deep learning
-- **Real-time Performance** - 20-40 FPS on CPU
-- **One-Click Launch** - Fully automated setup and execution
-- **Professional Architecture** - Modular, maintainable code
-- **Configurable** - Easy YAML-based configuration
-- **Color-Coded Display** - Unique colors for each object type
-- **Save Results** - Save frames with detection metadata
-
----
-
-## 📋 Detectable Objects
-
-👤 person • 🚗 car • 🏍️ motorcycle • 🚲 bicycle • ✈️ airplane • 🚌 bus • 🚂 train • 🚚 truck • ⛵ boat • 🐕 dog • 🐱 cat • 🐦 bird • 🐴 horse • 📱 cell phone • 💻 laptop • ⌨️ keyboard • 🖱️ mouse • 📺 tv • 🍎 food items • 🪑 furniture • ⚽ sports equipment • and 60+ more!
-
----
-
-## 🎮 Controls
-
-| Key | Action |
-|-----|--------|
-| **'q'** or **ESC** | Exit application |
-| **'s'** | Save current frame |
-| **'i'** | Show model info |
-
----
-
-## 📚 Documentation
-
-- **[START HERE](object_detection/START_HERE.md)** - Quick start guide
-- **[How to Run](object_detection/HOW_TO_RUN.md)** - Detailed instructions
-- **[Quick Start](object_detection/QUICKSTART.md)** - Quick guide
-- **[Full Documentation](object_detection/README.md)** - Complete docs
-- **[Project Overview](COMPUTER_VISION_PROJECTS.md)** - Project details
-
----
-
-## 🛠️ Requirements
-
-- Python 3.7+
-- Webcam/camera
-- ~23 MB disk space for model
-- Internet connection (first run only)
-
-**All dependencies auto-installed!**
-
----
-
-## 🎨 Use Cases
-
-- Smart home automation
-- Security monitoring
-- Inventory management
-- Traffic analysis
-- Pet monitoring
-- Package detection
-- Attendance systems
-- Safety monitoring
-
----
-
-## 💡 Tips
-
-1. **First time?** Just run `./run.sh` - everything is automatic
-2. **macOS users:** Grant camera permissions (System Settings → Privacy & Security → Camera)
-3. **Save detections:** Press 's' to save frames to `output/` folder
-4. **Customize:** Edit `object_detection/config/config.yaml` for settings
-
----
-
-## 🔧 Troubleshooting
-
-### Camera Permission (macOS)
-System Settings → Privacy & Security → Camera → Enable Terminal
-
-### Python Not Found
-Install from [python.org](https://python.org)
-
-### Slow Performance
-Already using fastest model (YOLOv4-tiny). Close other apps for better performance.
+A comprehensive smart home automation system with computer vision capabilities and IoT device integration.
 
 ---
 
@@ -123,42 +8,194 @@ Already using fastest model (YOLOv4-tiny). Close other apps for better performan
 
 ```
 SmartHomeAutomation/
-└── object_detection/
-    ├── run.sh                           # One-click launcher (macOS/Linux)
-    ├── run.py                           # Python launcher (cross-platform)
-    ├── run.bat                          # Windows launcher
-    ├── START_OBJECT_DETECTION.command   # macOS double-click
-    ├── src/                             # Source code modules
-    ├── scripts/                         # Executable scripts
-    ├── config/                          # Configuration files
-    ├── models/                          # YOLO model files
-    └── output/                          # Saved detections
+├── Backend/                    # Backend services and computer vision
+│   ├── object_detection/       # YOLO object detection system
+│   ├── device_connectivity/    # Device connectivity modules
+│   └── *.md                    # Backend documentation
+│
+└── Frontend/                   # Frontend application (coming soon)
 ```
 
 ---
 
-## 🎓 Technology
+## 🎯 Features
 
-- **YOLO (You Only Look Once)** - State-of-the-art object detection
+### **Backend**
+
+- ✅ **YOLO Object Detection** - Real-time object detection with 80+ object types
+- ✅ **Multi-Camera Support** - Webcam, USB cameras, and RTSP IP cameras
+- ✅ **Interactive Camera Selection** - Automatic camera discovery and selection
+- ✅ **Device Connectivity** - Modular device integration framework
+- ✅ **Smart Camera Integration** - Tapo IP camera support via RTSP
+
+### **Frontend**
+
+- 🚧 **Coming Soon** - Web interface for smart home control
+
+---
+
+## 🚀 Quick Start
+
+### **Backend - Object Detection**
+
+```bash
+cd Backend/object_detection
+./run.sh
+```
+
+This will:
+1. Install dependencies
+2. Download YOLO model
+3. Show camera selection menu
+4. Start real-time object detection
+
+**See [Backend/README.md](Backend/README.md) for detailed documentation.**
+
+---
+
+## 📚 Documentation
+
+### **Backend Documentation**
+
+| Document | Description |
+|----------|-------------|
+| [Backend/README.md](Backend/README.md) | Backend overview |
+| [Backend/object_detection/README.md](Backend/object_detection/README.md) | Object detection system |
+| [Backend/CAMERA_SELECTION_GUIDE.md](Backend/CAMERA_SELECTION_GUIDE.md) | Camera selection guide |
+| [Backend/RTSP_INTEGRATION_SUMMARY.md](Backend/RTSP_INTEGRATION_SUMMARY.md) | RTSP camera integration |
+| [Backend/device_connectivity/README.md](Backend/device_connectivity/README.md) | Device connectivity module |
+
+### **Frontend Documentation**
+
+- 🚧 Coming soon
+
+---
+
+## 🛠️ Technology Stack
+
+### **Backend**
+
+- **Python 3.x** - Core programming language
 - **OpenCV** - Computer vision library
-- **COCO Dataset** - 80 object classes
-- **Deep Learning** - Convolutional Neural Networks
+- **YOLO (YOLOv4-tiny)** - Object detection model
+- **RTSP** - IP camera streaming protocol
+
+### **Frontend**
+
+- 🚧 To be determined
+
+---
+
+## 📋 Requirements
+
+### **Backend**
+
+- Python 3.7+
+- OpenCV (cv2)
+- NumPy
+- PyYAML
+- Webcam or IP camera
+
+**See [Backend/object_detection/requirements.txt](Backend/object_detection/requirements.txt) for complete list.**
+
+---
+
+## 🎥 Camera Support
+
+The system supports multiple camera types:
+
+1. **Built-in Webcam** - Laptop/desktop camera (e.g., FaceTime HD Camera)
+2. **External USB Camera** - USB-connected cameras
+3. **RTSP IP Cameras** - Network cameras (Tapo, Hikvision, Dahua, etc.)
+
+**Interactive camera selection automatically detects all available cameras.**
+
+---
+
+## 🔧 Configuration
+
+### **Backend Configuration**
+
+Main configuration file: `Backend/object_detection/config/config.yaml`
+
+**Camera Selection Mode:**
+```yaml
+camera_source:
+  mode: "interactive"    # Shows camera selection menu
+```
+
+**See [Backend/object_detection/README.md](Backend/object_detection/README.md) for detailed configuration.**
+
+---
+
+## 📖 Getting Started
+
+### **1. Clone the Repository**
+
+```bash
+git clone <repository-url>
+cd SmartHomeAutomation
+```
+
+### **2. Run Backend Object Detection**
+
+```bash
+cd Backend/object_detection
+./run.sh
+```
+
+### **3. Select Your Camera**
+
+Choose from the interactive menu:
+- FaceTime HD Camera (built-in)
+- USB Camera (external)
+- Tapo Smart Camera (RTSP)
+
+### **4. Start Detecting Objects**
+
+The system will detect 80+ object types in real-time!
+
+---
+
+## 🎯 Use Cases
+
+- **Home Security** - Detect people and objects
+- **Smart Home Automation** - Trigger actions based on detected objects
+- **Pet Monitoring** - Detect cats, dogs, and other animals
+- **Package Detection** - Detect deliveries
+- **Vehicle Detection** - Monitor cars, bicycles, motorcycles
+- **Activity Monitoring** - Track daily activities
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
 ## 📄 License
 
-Open-source for educational and personal use.
+This project is licensed under the MIT License.
 
 ---
 
-## 🙏 Credits
+## 🙏 Acknowledgments
 
-- **YOLO** - Joseph Redmon et al.
+- **YOLO** - You Only Look Once object detection
 - **OpenCV** - Open Source Computer Vision Library
-- **COCO Dataset** - Microsoft
+- **Tapo** - TP-Link smart camera integration
 
 ---
 
-**Ready to detect objects? Run `cd object_detection && ./run.sh` and start detecting!** 🚀
+## 📞 Support
+
+For issues and questions:
+- Check the documentation in `Backend/` folder
+- Review troubleshooting guides
+- Open an issue on GitHub
+
+---
+
+**Built with ❤️ for Smart Home Automation**
 
