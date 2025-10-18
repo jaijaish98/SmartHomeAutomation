@@ -1,104 +1,176 @@
-/* Camera Selector Styles */
+/* Camera Selector Panel Styles */
 
-.camera-selector {
+.camera-selector-panel {
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
 }
 
-.selector-label {
-  font-size: 1.2rem;
-  font-weight: 600;
+.panel-header {
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 1rem;
+}
+
+.panel-title {
+  font-size: 1.25rem;
+  font-weight: 700;
   color: #333;
-  display: block;
+  margin: 0 0 0.5rem 0;
+}
+
+.camera-count {
+  font-size: 0.875rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Camera List */
+.camera-list {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+}
+
+.camera-item {
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  background: white;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.camera-item:hover:not(.disabled) {
+  border-color: #667eea;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.15);
+  transform: translateX(4px);
+}
+
+.camera-item.active {
+  border-color: #667eea;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.camera-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.camera-item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
-.camera-dropdown {
-  width: 100%;
+.camera-icon {
+  font-size: 1.25rem;
+}
+
+.camera-name {
+  flex: 1;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.streaming-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.camera-item-details {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+}
+
+.camera-item.active .camera-item-details {
+  opacity: 0.9;
+}
+
+.detail-badge {
+  padding: 0.25rem 0.5rem;
+  background: #f0f0f0;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.camera-item.active .detail-badge {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.detail-text {
+  color: #666;
+}
+
+.camera-item.active .detail-text {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Selected Camera Info */
+.selected-camera-info {
   padding: 1rem;
-  font-size: 1rem;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
-  background: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  outline: none;
-}
-
-.camera-dropdown:hover {
-  border-color: #667eea;
-}
-
-.camera-dropdown:focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-.camera-dropdown:disabled {
-  background: #f5f5f5;
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.camera-dropdown option {
-  padding: 0.5rem;
-}
-
-/* Camera Info */
-.camera-info {
   background: #f8f9fa;
   border-radius: 8px;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  border-left: 4px solid #667eea;
+  border: 1px solid #e0e0e0;
 }
 
-.info-item {
+.info-header {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #667eea;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.info-item:last-child {
-  border-bottom: none;
+  font-size: 0.875rem;
 }
 
 .info-label {
   font-weight: 600;
-  color: #555;
-  font-size: 0.95rem;
+  color: #666;
 }
 
 .info-value {
-  color: #333;
-  font-size: 0.95rem;
   font-weight: 500;
+  color: #333;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .selector-label {
+  .camera-selector-panel {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .panel-title {
     font-size: 1.1rem;
   }
 
-  .camera-dropdown {
-    font-size: 0.95rem;
+  .camera-item {
     padding: 0.875rem;
   }
 
-  .camera-info {
-    padding: 1rem;
-  }
-
-  .info-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
+  .camera-name {
+    font-size: 0.875rem;
   }
 }
-

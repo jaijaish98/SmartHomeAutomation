@@ -1,21 +1,50 @@
 /**
  * Camera Viewer Component
- * Displays camera feed with open/close controls
+ * Displays camera feed with automatic switching
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { openCamera, closeCamera, getCameraStreamUrl } from '../services/cameraService';
 import '../styles/CameraViewer.css';
 
-const CameraViewer = ({ selectedCamera }) => {
+const CameraViewer = ({ selectedCamera, onStreamingChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [streamUrl, setStreamUrl] = useState(null);
+  const currentCameraIdRef = useRef(null);
 
-  const handleOpenCamera = async () => {
-    if (!selectedCamera) {
-      setError('Please select a camera first');
+  // Auto-switch camera when selection changes
+  useEffect(() => {
+    const switchCamera = async () => {
+      // If no camera selected, close current camera
+      if (!selectedCamera) {
+        if (currentCameraIdRef.current !== null) {
+          await handleCloseCamera(currentCameraIdRef.current);
+        }
+        return;
+      }
+
+      // If same camera, do nothing
+      if (selectedCamera.id === currentCameraIdRef.current) {
+        return;
+      }
+
+      // Close current camera if open
+      if (currentCameraIdRef.current !== null) {
+        await handleCloseCamera(currentCameraIdRef.current);
+      }
+
+      // Open new camera
+      await handleOpenCamera(selectedCamera);
+    };
+
+    switchCamera();
+  }, [selectedCamera]);
+
+  const handleOpenCamera = async (camera) => {
+    if (!camera) {
+      setError('No camera selected');
       return;
     }
 
@@ -23,11 +52,15 @@ const CameraViewer = ({ selectedCamera }) => {
     setError(null);
 
     try {
-      const response = await openCamera(selectedCamera.id);
-      
+      const response = await openCamera(camera.id);
+
       if (response.success) {
-        setStreamUrl(getCameraStreamUrl(selectedCamera.id));
+        setStreamUrl(getCameraStreamUrl(camera.id));
         setIsOpen(true);
+        currentCameraIdRef.current = camera.id;
+        if (onStreamingChange) {
+          onStreamingChange(true);
+        }
       } else {
         setError('Failed to open camera');
       }
@@ -38,16 +71,20 @@ const CameraViewer = ({ selectedCamera }) => {
     }
   };
 
-  const handleCloseCamera = async () => {
+  const handleCloseCamera = async (cameraId) => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await closeCamera(selectedCamera.id);
-      
+      const response = await closeCamera(cameraId);
+
       if (response.success) {
         setStreamUrl(null);
         setIsOpen(false);
+        currentCameraIdRef.current = null;
+        if (onStreamingChange) {
+          onStreamingChange(false);
+        }
       } else {
         setError('Failed to close camera');
       }
@@ -60,23 +97,12 @@ const CameraViewer = ({ selectedCamera }) => {
 
   return (
     <div className="camera-viewer">
-      <div className="viewer-controls">
-        <button
-          className="btn btn-open"
-          onClick={handleOpenCamera}
-          disabled={!selectedCamera || isOpen || loading}
-        >
-          {loading && !isOpen ? '⏳ Opening...' : '▶️ Open Camera'}
-        </button>
-        
-        <button
-          className="btn btn-close"
-          onClick={handleCloseCamera}
-          disabled={!isOpen || loading}
-        >
-          {loading && isOpen ? '⏳ Closing...' : '⏹️ Close Camera'}
-        </button>
-      </div>
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-spinner"></div>
+          <p>Switching camera...</p>
+        </div>
+      )}
 
       {error && (
         <div className="error-message">
@@ -88,15 +114,15 @@ const CameraViewer = ({ selectedCamera }) => {
         {!selectedCamera && (
           <div className="placeholder">
             <div className="placeholder-icon">📹</div>
-            <p>Select a camera from the dropdown above</p>
+            <p>Select a camera from the side panel</p>
           </div>
         )}
 
-        {selectedCamera && !isOpen && (
+        {selectedCamera && !isOpen && !loading && (
           <div className="placeholder">
             <div className="placeholder-icon">🎥</div>
             <p>Camera: {selectedCamera.name}</p>
-            <p className="placeholder-hint">Click "Open Camera" to start viewing</p>
+            <p className="placeholder-hint">Opening camera...</p>
           </div>
         )}
 

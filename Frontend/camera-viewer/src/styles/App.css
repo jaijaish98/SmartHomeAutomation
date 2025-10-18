@@ -51,22 +51,30 @@
 
 .content-container {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  flex-direction: row;
+  gap: 0;
+  height: calc(100vh - 200px);
+  min-height: 500px;
 }
 
 .control-panel {
   background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 320px;
+  min-width: 320px;
+  border-right: 1px solid #e0e0e0;
+  padding: 1.5rem;
+  overflow-y: auto;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
 }
 
 .viewer-panel {
-  background: white;
-  border-radius: 12px;
+  flex: 1;
+  background: #f5f5f5;
   padding: 2rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Loading */

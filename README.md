@@ -1,201 +1,151 @@
-# Smart Home Automation
+# 🏠 Smart Home Automation
 
-A comprehensive smart home automation system with computer vision capabilities and IoT device integration.
+A comprehensive smart home automation system with real-time camera management, video streaming, and AI-powered object detection capabilities.
 
 ---
 
-## 📁 Project Structure
+## 🎯 Overview
+
+This project provides a full-stack solution for smart home camera monitoring with:
+- **Real-time Video Streaming** - View multiple cameras simultaneously
+- **AI Object Detection** - YOLO-based object recognition
+- **Multi-Camera Support** - Webcams and RTSP/IP cameras
+- **Web Interface** - Modern React-based UI
+- **REST API** - Flask backend for camera control
+
+---
+
+## 🏗️ Architecture
 
 ```
 SmartHomeAutomation/
-├── Backend/                    # Backend services and computer vision
-│   ├── object_detection/       # YOLO object detection system
-│   ├── device_connectivity/    # Device connectivity modules
-│   └── *.md                    # Backend documentation
+├── Backend/              # Python backend services
+│   ├── api/             # Flask REST API server
+│   ├── device_connectivity/  # Camera drivers
+│   ├── object_detection/     # YOLO detection
+│   └── docs/            # Backend documentation
 │
-└── Frontend/                   # Frontend application (coming soon)
+└── Frontend/            # React frontend application
+    └── camera-viewer/   # Camera viewer web app
+        └── docs/        # Frontend documentation
 ```
-
----
-
-## 🎯 Features
-
-### **Backend**
-
-- ✅ **YOLO Object Detection** - Real-time object detection with 80+ object types
-- ✅ **Multi-Camera Support** - Webcam, USB cameras, and RTSP IP cameras
-- ✅ **Interactive Camera Selection** - Automatic camera discovery and selection
-- ✅ **Device Connectivity** - Modular device integration framework
-- ✅ **Smart Camera Integration** - Tapo IP camera support via RTSP
-
-### **Frontend**
-
-- 🚧 **Coming Soon** - Web interface for smart home control
 
 ---
 
 ## 🚀 Quick Start
 
-### **Backend - Object Detection**
+### Prerequisites
+- Python 3.9+
+- Node.js 14+
+- npm 6+
 
+### Start Backend API
 ```bash
-cd Backend/object_detection
-./run.sh
+cd Backend/api
+python3 -m pip install Flask Flask-CORS
+python3 app.py
 ```
 
-This will:
-1. Install dependencies
-2. Download YOLO model
-3. Show camera selection menu
-4. Start real-time object detection
+### Start Frontend
+```bash
+cd Frontend/camera-viewer
+npm install
+npm start
+```
 
-**See [Backend/README.md](Backend/README.md) for detailed documentation.**
+### Access Application
+Open browser to: **http://localhost:3000**
 
 ---
 
-## 📚 Documentation
+## 📚 Documentation Index
 
-### **Backend Documentation**
+### 🎯 Getting Started
+- **[Full Stack Setup Guide](Backend/docs/FULL_STACK_SETUP.md)** - Complete installation and setup
+- **[Quick Start Guide](Frontend/camera-viewer/docs/QUICK_START.md)** - Get running in 5 minutes
+- **[Frontend Setup Guide](Frontend/camera-viewer/docs/SETUP_GUIDE.md)** - Detailed frontend setup
 
-| Document | Description |
-|----------|-------------|
-| [Backend/README.md](Backend/README.md) | Backend overview |
-| [Backend/object_detection/README.md](Backend/object_detection/README.md) | Object detection system |
-| [Backend/CAMERA_SELECTION_GUIDE.md](Backend/CAMERA_SELECTION_GUIDE.md) | Camera selection guide |
-| [Backend/RTSP_INTEGRATION_SUMMARY.md](Backend/RTSP_INTEGRATION_SUMMARY.md) | RTSP camera integration |
-| [Backend/device_connectivity/README.md](Backend/device_connectivity/README.md) | Device connectivity module |
+### 🔧 Backend Documentation
+- **[Backend README](Backend/README.md)** - Backend overview
+- **[API Documentation](Backend/api/README.md)** - REST API reference
+- **[Camera Selection Guide](Backend/docs/CAMERA_SELECTION_GUIDE.md)** - Camera configuration
+- **[RTSP Integration](Backend/docs/RTSP_INTEGRATION_SUMMARY.md)** - IP camera setup
+- **[Changelog](Backend/docs/CHANGELOG.md)** - Version history
 
-### **Frontend Documentation**
+### 🎨 Frontend Documentation
+- **[Frontend README](Frontend/camera-viewer/README.md)** - Frontend overview
+- **[Camera Viewer Summary](Backend/docs/CAMERA_VIEWER_SUMMARY.md)** - Feature overview
 
-- 🚧 Coming soon
+### 🤖 Computer Vision
+- **[Computer Vision Projects](Backend/docs/COMPUTER_VISION_PROJECTS.md)** - CV capabilities
+- **[Object Detection Guide](Backend/object_detection/README.md)** - YOLO setup
+
+### 📝 Project Documentation
+- **[Restructure Summary](Backend/docs/RESTRUCTURE_SUMMARY.md)** - Project organization
+
+---
+
+## 🎥 Features
+
+### Camera Management
+- ✅ Auto-discovery of webcams
+- ✅ RTSP/IP camera support (Tapo, etc.)
+- ✅ Real camera name detection (macOS)
+- ✅ Multi-camera switching
+- ✅ Live video streaming (MJPEG)
+
+### Object Detection
+- ✅ YOLO v3/v4 support
+- ✅ Real-time object recognition
+- ✅ Bounding box visualization
+- ✅ Confidence scoring
+- ✅ Custom object filtering
+
+### Web Interface
+- ✅ Modern React UI
+- ✅ Responsive design
+- ✅ Camera dropdown selector
+- ✅ Live video display
+- ✅ Camera statistics
+
+### API
+- ✅ RESTful endpoints
+- ✅ Camera discovery
+- ✅ Stream control
+- ✅ CORS enabled
+- ✅ Health monitoring
 
 ---
 
 ## 🛠️ Technology Stack
 
-### **Backend**
+### Backend
+- **Python 3.9+** - Core language
+- **Flask** - Web framework
+- **OpenCV** - Computer vision
+- **YOLO** - Object detection
+- **NumPy** - Numerical computing
 
-- **Python 3.x** - Core programming language
-- **OpenCV** - Computer vision library
-- **YOLO (YOLOv4-tiny)** - Object detection model
-- **RTSP** - IP camera streaming protocol
-
-### **Frontend**
-
-- 🚧 To be determined
-
----
-
-## 📋 Requirements
-
-### **Backend**
-
-- Python 3.7+
-- OpenCV (cv2)
-- NumPy
-- PyYAML
-- Webcam or IP camera
-
-**See [Backend/object_detection/requirements.txt](Backend/object_detection/requirements.txt) for complete list.**
+### Frontend
+- **React 18** - UI framework
+- **Axios** - HTTP client
+- **CSS3** - Styling
+- **Webpack** - Bundling
 
 ---
 
-## 🎥 Camera Support
+## 📖 API Reference
 
-The system supports multiple camera types:
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/cameras` | List all cameras |
+| POST | `/api/cameras/:id/open` | Open camera |
+| POST | `/api/cameras/:id/close` | Close camera |
+| GET | `/stream/:id` | Video stream |
+| GET | `/health` | Health check |
 
-1. **Built-in Webcam** - Laptop/desktop camera (e.g., FaceTime HD Camera)
-2. **External USB Camera** - USB-connected cameras
-3. **RTSP IP Cameras** - Network cameras (Tapo, Hikvision, Dahua, etc.)
-
-**Interactive camera selection automatically detects all available cameras.**
-
----
-
-## 🔧 Configuration
-
-### **Backend Configuration**
-
-Main configuration file: `Backend/object_detection/config/config.yaml`
-
-**Camera Selection Mode:**
-```yaml
-camera_source:
-  mode: "interactive"    # Shows camera selection menu
-```
-
-**See [Backend/object_detection/README.md](Backend/object_detection/README.md) for detailed configuration.**
+See [API Documentation](Backend/api/README.md) for details.
 
 ---
 
-## 📖 Getting Started
-
-### **1. Clone the Repository**
-
-```bash
-git clone <repository-url>
-cd SmartHomeAutomation
-```
-
-### **2. Run Backend Object Detection**
-
-```bash
-cd Backend/object_detection
-./run.sh
-```
-
-### **3. Select Your Camera**
-
-Choose from the interactive menu:
-- FaceTime HD Camera (built-in)
-- USB Camera (external)
-- Tapo Smart Camera (RTSP)
-
-### **4. Start Detecting Objects**
-
-The system will detect 80+ object types in real-time!
-
----
-
-## 🎯 Use Cases
-
-- **Home Security** - Detect people and objects
-- **Smart Home Automation** - Trigger actions based on detected objects
-- **Pet Monitoring** - Detect cats, dogs, and other animals
-- **Package Detection** - Detect deliveries
-- **Vehicle Detection** - Monitor cars, bicycles, motorcycles
-- **Activity Monitoring** - Track daily activities
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
----
-
-## 🙏 Acknowledgments
-
-- **YOLO** - You Only Look Once object detection
-- **OpenCV** - Open Source Computer Vision Library
-- **Tapo** - TP-Link smart camera integration
-
----
-
-## 📞 Support
-
-For issues and questions:
-- Check the documentation in `Backend/` folder
-- Review troubleshooting guides
-- Open an issue on GitHub
-
----
-
-**Built with ❤️ for Smart Home Automation**
-
+**Smart Home Automation - Making homes smarter, one camera at a time** 🏠📹

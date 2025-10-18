@@ -39,7 +39,7 @@ class CameraDiscovery:
                 # Format: "    Camera Name:\n      Model ID: ..."
                 camera_sections = re.split(r'\n\s{4}(?=[A-Z])', output)
 
-                index = 0
+                temp_names = []
                 for section in camera_sections:
                     # Look for camera name (first line of section)
                     lines = section.strip().split('\n')
@@ -48,9 +48,17 @@ class CameraDiscovery:
 
                         # Clean up the name
                         if camera_name and camera_name != 'Camera':
-                            # Map to index (first camera is index 0, second is index 1, etc.)
-                            camera_names[index] = camera_name
-                            index += 1
+                            temp_names.append(camera_name)
+
+                # IMPORTANT: On macOS, system_profiler lists cameras in REVERSE order
+                # compared to OpenCV indices. We need to reverse to match OpenCV.
+                # Example: system_profiler shows [USB Camera, FaceTime HD Camera]
+                # but OpenCV index 0 = FaceTime HD, index 1 = USB Camera
+                temp_names.reverse()
+
+                # Map to indices
+                for index, name in enumerate(temp_names):
+                    camera_names[index] = name
 
         except Exception as e:
             # If system_profiler fails, return empty dict

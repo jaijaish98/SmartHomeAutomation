@@ -14,6 +14,7 @@ function App() {
   const [selectedCamera, setSelectedCamera] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isStreaming, setIsStreaming] = useState(false);
 
   // Load available cameras on mount
   useEffect(() => {
@@ -36,6 +37,10 @@ function App() {
 
   const handleCameraSelect = (camera) => {
     setSelectedCamera(camera);
+  };
+
+  const handleStreamingChange = (streaming) => {
+    setIsStreaming(streaming);
   };
 
   return (
@@ -75,11 +80,15 @@ function App() {
                 selectedCamera={selectedCamera}
                 onCameraSelect={handleCameraSelect}
                 disabled={loading}
+                isStreaming={isStreaming}
               />
             </div>
 
             <div className="viewer-panel">
-              <CameraViewer selectedCamera={selectedCamera} />
+              <CameraViewer
+                selectedCamera={selectedCamera}
+                onStreamingChange={handleStreamingChange}
+              />
             </div>
           </div>
         )}
