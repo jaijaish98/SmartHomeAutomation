@@ -1,41 +1,50 @@
 """
-Camera Handler Module
-Handles camera initialization, frame capture, and camera-related utilities.
+Webcam Camera Handler
+Handles connection to local webcams/USB cameras.
 """
 
 import cv2
 import platform
+from typing import Tuple, Optional, Dict, Any
+import numpy as np
+from .base import CameraSource
 
 
-class CameraHandler:
-    """Manages camera operations and frame capture."""
+class WebcamCamera(CameraSource):
+    """Handles local webcam/USB camera connection and frame capture."""
     
-    def __init__(self, camera_index=0, width=0, height=0, fps=0):
+    def __init__(
+        self,
+        camera_index: int = 0,
+        width: int = 0,
+        height: int = 0,
+        fps: int = 0
+    ):
         """
-        Initialize camera handler.
+        Initialize webcam camera handler.
         
         Args:
-            camera_index (int): Camera device index
+            camera_index (int): Camera device index (0 for default camera)
             width (int): Desired frame width (0 for default)
             height (int): Desired frame height (0 for default)
             fps (int): Desired FPS (0 for default)
         """
+        super().__init__()
         self.camera_index = camera_index
         self.width = width
         self.height = height
         self.fps = fps
         self.capture = None
-        self.is_initialized = False
         
-    def initialize(self):
+    def initialize(self) -> bool:
         """
-        Initialize the camera.
+        Initialize the webcam.
         
         Returns:
             bool: True if successful, False otherwise
         """
         try:
-            print(f"\n🎥 Initializing camera (index: {self.camera_index})...")
+            print(f"\n🎥 Initializing webcam (index: {self.camera_index})...")
             
             self.capture = cv2.VideoCapture(self.camera_index)
             
@@ -55,7 +64,7 @@ class CameraHandler:
             actual_height = int(self.capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
             actual_fps = int(self.capture.get(cv2.CAP_PROP_FPS))
             
-            print(f"   ✅ Camera initialized successfully")
+            print(f"   ✅ Webcam initialized successfully")
             print(f"   📐 Resolution: {actual_width}x{actual_height}")
             print(f"   🎬 FPS: {actual_fps if actual_fps > 0 else 'Unknown'}")
             
@@ -63,7 +72,7 @@ class CameraHandler:
             return True
             
         except Exception as e:
-            print(f"   ❌ Error initializing camera: {e}")
+            print(f"   ❌ Error initializing webcam: {e}")
             
             if platform.system() == "Darwin":  # macOS
                 print(f"\n   💡 macOS Camera Permission Required:")
@@ -73,39 +82,39 @@ class CameraHandler:
             
             return False
     
-    def read_frame(self):
+    def read_frame(self) -> Tuple[bool, Optional[np.ndarray]]:
         """
-        Read a frame from the camera.
-
+        Read a frame from the webcam.
+        
         Returns:
             tuple: (success, frame) where success is bool and frame is numpy array
         """
         if not self.is_initialized or self.capture is None:
             return False, None
-
+        
         success, frame = self.capture.read()
-
+        
         # Flip frame horizontally to fix mirroring (makes it look natural like a mirror)
         if success and frame is not None:
             frame = cv2.flip(frame, 1)
-
+        
         return success, frame
     
-    def release(self):
-        """Release camera resources."""
+    def release(self) -> None:
+        """Release webcam resources."""
         if self.capture is not None:
             self.capture.release()
             self.is_initialized = False
-            print("   🎥 Camera released")
+            print("   🎥 Webcam released")
     
-    def get_properties(self):
+    def get_properties(self) -> Dict[str, Any]:
         """
-        Get current camera properties.
+        Get webcam properties.
         
         Returns:
             dict: Camera properties
         """
-        if not self.is_initialized:
+        if not self.is_initialized or self.capture is None:
             return {}
         
         return {
@@ -114,14 +123,6 @@ class CameraHandler:
             'fps': int(self.capture.get(cv2.CAP_PROP_FPS)),
             'brightness': self.capture.get(cv2.CAP_PROP_BRIGHTNESS),
             'contrast': self.capture.get(cv2.CAP_PROP_CONTRAST),
+            'source_type': 'Webcam',
         }
-    
-    def __enter__(self):
-        """Context manager entry."""
-        self.initialize()
-        return self
-    
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Context manager exit."""
-        self.release()
 

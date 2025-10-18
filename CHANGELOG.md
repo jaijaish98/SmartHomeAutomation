@@ -1,5 +1,21 @@
 # Changelog
 
+## 2024-10-18 - Camera Mirror Fix
+
+### 🔧 Fixed Camera Mirroring
+
+**Changed:**
+- ✅ Camera feed now horizontally flipped for natural viewing
+- ✅ Updated `src/camera.py` to flip frames using `cv2.flip(frame, 1)`
+- ✅ Makes the video look like a natural mirror (text and movements appear correctly)
+
+**Technical Details:**
+- Modified `CameraHandler.read_frame()` method
+- Added horizontal flip after frame capture
+- No performance impact (flip is very fast)
+
+---
+
 ## 2024-10-18 - Major Simplification
 
 ### 🎉 Simplified to Single Object Detection System

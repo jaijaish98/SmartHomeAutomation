@@ -1,11 +1,28 @@
 # YOLO Object Detection Configuration
 
-# Camera Settings
-camera:
+# Camera Source Selection
+camera_source:
+  mode: "interactive"         # Options: "interactive" (menu), "auto" (use type below)
+  type: "rtsp"                # Used when mode="auto". Options: "webcam" or "rtsp"
+
+# Webcam Settings (used when camera_source.type = "webcam")
+webcam:
   index: 0                    # Camera device index (0 for default camera)
   width: 640                  # Frame width (set to 0 for default)
   height: 480                 # Frame height (set to 0 for default)
   fps: 30                     # Target FPS (set to 0 for default)
+
+# RTSP Camera Settings (used when camera_source.type = "rtsp")
+# SECURITY NOTE: Do not commit credentials to git!
+# Use environment variables or a separate credentials file (see credentials.yaml.example)
+rtsp:
+  url: ""                     # RTSP URL: rtsp://username:password@ip:port/stream
+                              # Example: rtsp://admin:password@192.168.1.100:554/stream1
+                              # Leave empty to load from credentials.yaml
+  reconnect_attempts: 3       # Number of reconnection attempts on failure
+  reconnect_delay: 2          # Delay in seconds between reconnection attempts
+  timeout: 10                 # Connection timeout in seconds
+  buffer_size: 1              # Frame buffer size (1 = latest frame only, reduces lag)
 
 # YOLO Model Settings
 model:

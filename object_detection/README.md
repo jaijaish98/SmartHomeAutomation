@@ -1,15 +1,21 @@
 # YOLO Real-time Object Detection
 
-A professional, well-structured Python application for real-time object detection using YOLO (You Only Look Once) and OpenCV. Detects 80+ object types from your webcam feed with high accuracy and performance.
+A professional, well-structured Python application for real-time object detection using YOLO (You Only Look Once) and OpenCV. Detects 80+ object types from your **webcam or RTSP IP camera** with high accuracy and performance.
 
 **Note:** This system detects people (which includes faces), vehicles, animals, electronics, and many more objects - making it far more versatile than simple face-only detection systems.
+
+**NEW:** Now supports RTSP IP cameras (Tapo, Hikvision, Dahua, etc.) in addition to webcams! See [RTSP Camera Setup Guide](RTSP_CAMERA_SETUP.md).
 
 ## 🎯 Features
 
 - ✅ **80+ Object Types** - Detects people, vehicles, animals, everyday objects, and more
+- ✅ **Interactive Camera Selection** - Automatically detects and lists all available cameras
+- ✅ **Multiple Camera Sources** - Built-in webcam, external USB cameras, and RTSP IP cameras
 - ✅ **Real-time Performance** - Fast detection with FPS monitoring
 - ✅ **High Accuracy** - YOLO deep learning model (90-95% accuracy)
 - ✅ **Color-coded Bounding Boxes** - Each object type has a unique color
+- ✅ **Natural Mirror View** - Webcams are flipped for natural viewing (RTSP cameras show original orientation)
+- ✅ **Auto-Reconnection** - RTSP streams automatically reconnect on failure
 - ✅ **Confidence Scores** - Shows detection confidence for each object
 - ✅ **Object Counting** - Real-time count of detected objects
 - ✅ **Frame Saving** - Save detection results with one keypress
@@ -86,7 +92,43 @@ python run.py
 That's it! The launcher automatically:
 - ✅ Checks dependencies
 - ✅ Downloads model (first time only)
+- ✅ Shows camera selection menu
 - ✅ Launches object detection
+
+### 📹 Camera Selection
+
+When you run the application, you'll see an interactive menu listing all available cameras:
+
+```
+======================================================================
+📹 Available Cameras
+======================================================================
+
+1. 🎥 Webcam - FaceTime HD Camera
+   Resolution: 1920x1080
+   FPS: 30
+   Device Index: 0
+
+2. 🎥 Webcam - USB Camera
+   Resolution: 1920x1080
+   FPS: 30
+   Device Index: 1
+
+3. 📹 RTSP - Tapo Smart Camera
+   Resolution: Variable
+   FPS: Variable
+
+======================================================================
+
+📌 Select a camera (1-3) or 'q' to quit:
+```
+
+**Simply enter the number of the camera you want to use!**
+
+The system automatically detects:
+- 🎥 **Built-in webcams** (laptop camera)
+- 🎥 **External USB cameras** (connected via USB)
+- 📹 **RTSP IP cameras** (configured in credentials.yaml)
 
 ---
 
@@ -127,13 +169,51 @@ python scripts/detect_objects.py
 
 Edit `config/config.yaml` to customize settings:
 
-### Camera Settings
+### Camera Source Selection
+
+**Interactive Mode (Default - Recommended):**
+
+The application will automatically detect and list all available cameras:
+
 ```yaml
-camera:
+camera_source:
+  mode: "interactive"    # Shows camera selection menu
+```
+
+**Auto Mode (Skip Menu):**
+
+Automatically use a specific camera type:
+
+```yaml
+camera_source:
+  mode: "auto"           # Skip menu, use type below
+  type: "webcam"         # Options: "webcam" or "rtsp"
+```
+
+### Webcam Settings
+
+```yaml
+webcam:
   index: 0          # Camera device (0 = default)
   width: 640        # Frame width (0 = default)
   height: 480       # Frame height (0 = default)
+  fps: 30           # Target FPS (0 = default)
 ```
+
+### RTSP Camera Settings
+
+For IP cameras (Tapo, Hikvision, etc.):
+
+```yaml
+rtsp:
+  url: ""                     # RTSP URL (or use credentials.yaml)
+  reconnect_attempts: 3       # Reconnection attempts
+  reconnect_delay: 2          # Delay between reconnections (seconds)
+  timeout: 10                 # Connection timeout (seconds)
+  buffer_size: 1              # Frame buffer (1 = latest frame)
+```
+
+**📖 See [RTSP Camera Setup Guide](RTSP_CAMERA_SETUP.md) for detailed instructions**
 
 ### Model Settings
 ```yaml

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Real-time Object Detection using YOLO
-Main application script for detecting objects from webcam feed.
+Main application script for detecting objects from webcam or RTSP camera feed.
 """
 
 import sys
@@ -14,9 +14,12 @@ from datetime import datetime
 # Add src directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent / 'src'))
 
+# Add device_connectivity to path
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 from detector import ObjectDetector
-from camera import CameraHandler
 from visualizer import Visualizer
+from device_connectivity.camera import WebcamCamera, TapoRTSPCamera, select_camera_interactive
 
 
 class ObjectDetectionApp:
@@ -38,7 +41,23 @@ class ObjectDetectionApp:
         """Load configuration from YAML file."""
         try:
             with open(self.config_path, 'r') as f:
-                return yaml.safe_load(f)
+                config = yaml.safe_load(f)
+
+            # Load credentials if using RTSP and URL is empty
+            if config.get('camera_source', {}).get('type') == 'rtsp':
+                if not config.get('rtsp', {}).get('url'):
+                    credentials_path = self.project_root / 'config' / 'credentials.yaml'
+                    if credentials_path.exists():
+                        with open(credentials_path, 'r') as f:
+                            credentials = yaml.safe_load(f)
+                            if credentials and 'rtsp' in credentials:
+                                config['rtsp']['url'] = credentials['rtsp']['url']
+                                print("   ✅ Loaded RTSP credentials from credentials.yaml")
+                    else:
+                        print(f"   ⚠️  Warning: credentials.yaml not found")
+                        print(f"   💡 Copy credentials.yaml.example to credentials.yaml and add your RTSP URL")
+
+            return config
         except Exception as e:
             print(f"❌ Error loading config: {e}")
             sys.exit(1)
@@ -67,18 +86,59 @@ class ObjectDetectionApp:
             print("   Run: python scripts/download_models.py")
             return False
         
-        # Initialize camera
-        camera_config = self.config['camera']
-        self.camera = CameraHandler(
-            camera_index=camera_config['index'],
-            width=camera_config.get('width', 0),
-            height=camera_config.get('height', 0),
-            fps=camera_config.get('fps', 0)
-        )
-        
-        if not self.camera.initialize():
-            print("\n❌ Failed to initialize camera")
-            return False
+        # Initialize camera based on mode
+        camera_source_config = self.config.get('camera_source', {})
+        camera_mode = camera_source_config.get('mode', 'auto')
+
+        if camera_mode == 'interactive':
+            # Interactive camera selection
+            print("\n")
+            camera, camera_info = select_camera_interactive(self.config)
+
+            if camera is None:
+                print("\n❌ No camera selected")
+                return False
+
+            self.camera = camera
+
+            # Initialize the selected camera
+            if not self.camera.initialize():
+                print("\n❌ Failed to initialize camera")
+                return False
+        else:
+            # Auto mode - use configured camera type
+            camera_source_type = camera_source_config.get('type', 'webcam')
+
+            if camera_source_type == 'rtsp':
+                # Initialize RTSP camera
+                rtsp_config = self.config.get('rtsp', {})
+                rtsp_url = rtsp_config.get('url', '')
+
+                if not rtsp_url:
+                    print("\n❌ RTSP URL not configured")
+                    print("   💡 Set rtsp.url in config.yaml or credentials.yaml")
+                    return False
+
+                self.camera = TapoRTSPCamera(
+                    rtsp_url=rtsp_url,
+                    reconnect_attempts=rtsp_config.get('reconnect_attempts', 3),
+                    reconnect_delay=rtsp_config.get('reconnect_delay', 2),
+                    timeout=rtsp_config.get('timeout', 10),
+                    buffer_size=rtsp_config.get('buffer_size', 1)
+                )
+            else:
+                # Initialize webcam
+                webcam_config = self.config.get('webcam', {})
+                self.camera = WebcamCamera(
+                    camera_index=webcam_config.get('index', 0),
+                    width=webcam_config.get('width', 0),
+                    height=webcam_config.get('height', 0),
+                    fps=webcam_config.get('fps', 0)
+                )
+
+            if not self.camera.initialize():
+                print("\n❌ Failed to initialize camera")
+                return False
         
         # Initialize visualizer
         self.visualizer = Visualizer(self.config['display'])
