@@ -1,0 +1,68 @@
+# YOLO Object Detection Configuration
+
+# Camera Settings
+camera:
+  index: 0                    # Camera device index (0 for default camera)
+  width: 640                  # Frame width (set to 0 for default)
+  height: 480                 # Frame height (set to 0 for default)
+  fps: 30                     # Target FPS (set to 0 for default)
+
+# YOLO Model Settings
+model:
+  type: "yolov4-tiny"         # Options: yolov3, yolov3-tiny, yolov4, yolov4-tiny
+  confidence_threshold: 0.5   # Minimum confidence for detection (0.0 - 1.0)
+  nms_threshold: 0.4          # Non-maximum suppression threshold (0.0 - 1.0)
+  input_size: 416             # YOLO input size (320, 416, 608)
+
+# Model Files (auto-downloaded if not present)
+model_files:
+  yolov4-tiny:
+    weights: "models/yolov4-tiny.weights"
+    config: "models/yolov4-tiny.cfg"
+    names: "models/coco.names"
+    weights_url: "https://github.com/AlexeyAB/darknet/releases/download/yolov4/yolov4-tiny.weights"
+    config_url: "https://raw.githubusercontent.com/AlexeyAB/darknet/master/cfg/yolov4-tiny.cfg"
+    names_url: "https://raw.githubusercontent.com/AlexeyAB/darknet/master/data/coco.names"
+  
+  yolov4:
+    weights: "models/yolov4.weights"
+    config: "models/yolov4.cfg"
+    names: "models/coco.names"
+    weights_url: "https://github.com/AlexeyAB/darknet/releases/download/yolov4/yolov4.weights"
+    config_url: "https://raw.githubusercontent.com/AlexeyAB/darknet/master/cfg/yolov4.cfg"
+    names_url: "https://raw.githubusercontent.com/AlexeyAB/darknet/master/data/coco.names"
+  
+  yolov3:
+    weights: "models/yolov3.weights"
+    config: "models/yolov3.cfg"
+    names: "models/coco.names"
+    weights_url: "https://pjreddie.com/media/files/yolov3.weights"
+    config_url: "https://raw.githubusercontent.com/pjreddie/darknet/master/cfg/yolov3.cfg"
+    names_url: "https://raw.githubusercontent.com/pjreddie/darknet/master/data/coco.names"
+
+# Display Settings
+display:
+  show_fps: true              # Show FPS counter
+  show_count: true            # Show object count
+  show_confidence: true       # Show confidence scores
+  box_thickness: 2            # Bounding box line thickness
+  font_scale: 0.6             # Text font scale
+  font_thickness: 2           # Text thickness
+
+# Filter Settings (optional - leave empty to detect all objects)
+filter:
+  enabled: false              # Enable object filtering
+  classes:                    # Only detect these classes (if enabled)
+    - person
+    - car
+    - dog
+    - cat
+    - cell phone
+    - laptop
+
+# Performance Settings
+performance:
+  use_gpu: false              # Use GPU if available (requires CUDA)
+  backend: "opencv"           # Backend: opencv, cuda
+  target: "cpu"               # Target: cpu, cuda, opencl
+
