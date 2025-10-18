@@ -50,10 +50,10 @@ class CameraDiscovery:
                         if camera_name and camera_name != 'Camera':
                             temp_names.append(camera_name)
 
-                # IMPORTANT: On macOS, system_profiler lists cameras in REVERSE order
-                # compared to OpenCV indices. We need to reverse to match OpenCV.
-                # Example: system_profiler shows [USB Camera, FaceTime HD Camera]
-                # but OpenCV index 0 = FaceTime HD, index 1 = USB Camera
+                # IMPORTANT: On macOS, system_profiler returns cameras in different order
+                # than OpenCV indices. Testing shows we need to reverse the list.
+                # system_profiler: ['FaceTime HD Camera', 'USB Camera']
+                # OpenCV actual:   index 0 = USB Camera, index 1 = FaceTime HD Camera
                 temp_names.reverse()
 
                 # Map to indices
