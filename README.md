@@ -39,21 +39,43 @@ SmartHomeAutomation/
 - Node.js 14+
 - npm 6+
 
-### Start Backend API
+### Option 1: Using Shell Scripts (Recommended ⭐)
+
+**Start the application:**
+```bash
+./start.sh
+```
+
+This will:
+- Start the backend API server on http://localhost:5000
+- Start the frontend React app on http://localhost:3000
+- Create log files (backend.log and frontend.log)
+- Automatically open the application in your browser
+
+**Stop the application:**
+```bash
+./stop.sh
+```
+
+Or use the **🛑 Stop App** button in the UI.
+
+### Option 2: Manual Start
+
+**Start Backend API:**
 ```bash
 cd Backend/api
 python3 -m pip install Flask Flask-CORS
 python3 app.py
 ```
 
-### Start Frontend
+**Start Frontend:**
 ```bash
 cd Frontend/camera-viewer
 npm install
 npm start
 ```
 
-### Access Application
+**Access Application:**
 Open browser to: **http://localhost:3000**
 
 ---
@@ -101,19 +123,31 @@ Open browser to: **http://localhost:3000**
 - ✅ Confidence scoring
 - ✅ Custom object filtering
 
+### Face Recognition 👤 (NEW!)
+- ✅ Face enrollment with upload or camera capture
+- ✅ Live camera preview with countdown timer
+- ✅ Multiple photos per person for better accuracy
+- ✅ Real-time face recognition without restart
+- ✅ Person management (add, update, delete)
+- ✅ Face recognition statistics
+
 ### Web Interface
 - ✅ Modern React UI
 - ✅ Responsive design
 - ✅ Camera dropdown selector
 - ✅ Live video display
 - ✅ Camera statistics
+- ✅ Face management interface
+- ✅ Stop application button
 
 ### API
 - ✅ RESTful endpoints
 - ✅ Camera discovery
 - ✅ Stream control
+- ✅ Face recognition endpoints
 - ✅ CORS enabled
 - ✅ Health monitoring
+- ✅ Shutdown endpoint
 
 ---
 
@@ -136,13 +170,31 @@ Open browser to: **http://localhost:3000**
 
 ## 📖 API Reference
 
+### Camera Endpoints
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/cameras` | List all cameras |
 | POST | `/api/cameras/:id/open` | Open camera |
 | POST | `/api/cameras/:id/close` | Close camera |
 | GET | `/stream/:id` | Video stream |
+
+### Face Recognition Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/faces` | List all enrolled persons |
+| POST | `/api/faces/enroll` | Enroll face from upload |
+| POST | `/api/faces/enroll/capture` | Enroll face from camera |
+| GET | `/api/faces/:id` | Get person details |
+| PUT | `/api/faces/:id` | Update person info |
+| DELETE | `/api/faces/:id` | Delete person |
+| POST | `/api/faces/reload` | Reload face recognition |
+| GET | `/api/faces/stats` | Get statistics |
+
+### System Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
 | GET | `/health` | Health check |
+| POST | `/api/shutdown` | Shutdown server |
 
 See [API Documentation](Backend/api/README.md) for details.
 

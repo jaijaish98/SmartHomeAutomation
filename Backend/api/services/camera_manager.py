@@ -18,6 +18,7 @@ from device_connectivity.camera.webcam import WebcamCamera
 from device_connectivity.camera.tapo.rtsp_camera import TapoRTSPCamera
 from object_detection.src.detector import ObjectDetector
 from object_detection.src.visualizer import Visualizer
+from face_identification import FaceEncoder, FaceIdentifier, FaceDatabase
 
 
 class CameraManager:
@@ -30,8 +31,13 @@ class CameraManager:
         self.detector = None
         self.visualizer = None
         self.object_detection_enabled = False
+        self.face_encoder = None
+        self.face_identifier = None
+        self.face_database = None
+        self.face_recognition_enabled = False
         self._discover_cameras()
         self._initialize_object_detection()
+        self._initialize_face_recognition()
     
     def _load_config(self):
         """Load configuration from config.yaml and credentials.yaml"""
@@ -136,6 +142,30 @@ class CameraManager:
             self.visualizer = None
             self.object_detection_enabled = False
 
+    def _initialize_face_recognition(self):
+        """Initialize face recognition system"""
+        try:
+            print("\n👤 Initializing face recognition...")
+
+            # Initialize database
+            self.face_database = FaceDatabase()
+
+            # Initialize encoder (use 'hog' for CPU, 'cnn' for GPU)
+            self.face_encoder = FaceEncoder(model='hog')
+
+            # Initialize identifier
+            self.face_identifier = FaceIdentifier(self.face_database, tolerance=0.6)
+
+            self.face_recognition_enabled = True
+            print("   ✅ Face recognition initialized successfully")
+
+        except Exception as e:
+            print(f"   ⚠️  Error initializing face recognition: {e}")
+            self.face_encoder = None
+            self.face_identifier = None
+            self.face_database = None
+            self.face_recognition_enabled = False
+
     def get_all_cameras(self) -> list:
         """Get list of all available cameras"""
         return self.available_cameras
@@ -236,8 +266,54 @@ class CameraManager:
                 'error': f'Error closing camera: {str(e)}'
             }
     
+    def capture_raw_frame(self, camera_id: int):
+        """Capture a raw frame from camera without any processing"""
+        # If camera is already active, use it
+        if camera_id in self.active_cameras:
+            camera = self.active_cameras[camera_id]
+            lock = self.camera_locks[camera_id]
+            with lock:
+                success, frame = camera.read_frame()
+                if success and frame is not None:
+                    return frame
+                return None
+
+        # Otherwise, temporarily open the camera
+        camera_info = next((cam for cam in self.available_cameras if cam['id'] == camera_id), None)
+        if not camera_info:
+            return None
+
+        try:
+            if camera_info['type'] == 'webcam':
+                import cv2
+                cap = cv2.VideoCapture(camera_info['index'])
+                if not cap.isOpened():
+                    return None
+
+                # Read a few frames to let camera adjust
+                for _ in range(5):
+                    cap.read()
+
+                success, frame = cap.read()
+                cap.release()
+
+                if success and frame is not None:
+                    return frame
+            elif camera_info['type'] == 'rtsp':
+                from device_connectivity.camera.rtsp_camera import RTSPCamera
+                camera = RTSPCamera(camera_info['url'])
+                if camera.connect():
+                    success, frame = camera.read_frame()
+                    camera.disconnect()
+                    if success and frame is not None:
+                        return frame
+        except Exception as e:
+            print(f"⚠️  Error capturing raw frame: {e}")
+
+        return None
+
     def get_camera_frame(self, camera_id: int):
-        """Get current frame from camera with object detection"""
+        """Get current frame from camera with object detection and face recognition"""
         if camera_id not in self.active_cameras:
             return None
 
@@ -265,9 +341,58 @@ class CameraManager:
                         print(f"⚠️  Detection error: {e}")
                         pass
 
+                # Apply face recognition if enabled
+                if self.face_recognition_enabled and self.face_encoder and self.face_identifier:
+                    try:
+                        # Detect and identify faces
+                        face_results = self.face_encoder.detect_faces_in_frame(frame)
+
+                        if face_results:
+                            # Extract encodings
+                            encodings = [encoding for encoding, _ in face_results]
+                            locations = [location for _, location in face_results]
+
+                            # Identify faces
+                            identifications = self.face_identifier.identify_faces_in_frame(encodings)
+
+                            # Draw face boxes and names
+                            frame = self._draw_face_identifications(frame, locations, identifications)
+                    except Exception as e:
+                        # If face recognition fails, just continue
+                        print(f"⚠️  Face recognition error: {e}")
+                        pass
+
                 return frame
 
         return None
+
+    def _draw_face_identifications(self, frame, face_locations, identifications):
+        """Draw face bounding boxes and names on frame"""
+        import cv2
+
+        for location, identification in zip(face_locations, identifications):
+            top, right, bottom, left = location
+
+            # Determine color based on whether person is known
+            if identification['is_known']:
+                color = (0, 255, 0)  # Green for known faces
+                label = f"{identification['person_name']} ({identification['confidence']:.1f}%)"
+            else:
+                color = (0, 0, 255)  # Red for unknown faces
+                label = "Unknown"
+
+            # Draw rectangle around face
+            cv2.rectangle(frame, (left, top), (right, bottom), color, 2)
+
+            # Draw label background
+            label_size, _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+            cv2.rectangle(frame, (left, top - 30), (left + label_size[0], top), color, -1)
+
+            # Draw label text
+            cv2.putText(frame, label, (left, top - 10),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+
+        return frame
     
     def is_camera_active(self, camera_id: int) -> bool:
         """Check if camera is currently active"""

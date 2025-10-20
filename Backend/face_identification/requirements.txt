@@ -1,0 +1,10 @@
+# Face Recognition Dependencies
+# Note: Install dlib-bin first: pip install dlib-bin
+# Then install face_recognition without dependencies: pip install --no-deps face_recognition face-recognition-models
+face_recognition==1.3.0
+face-recognition-models==0.3.0
+dlib-bin>=19.24.0
+numpy>=1.21.0
+opencv-python>=4.5.0
+Pillow>=8.0.0
+

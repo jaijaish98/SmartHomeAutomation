@@ -6,6 +6,8 @@ Provides REST API endpoints for camera management and video streaming
 from flask import Flask, jsonify, request, Response
 from flask_cors import CORS
 import sys
+import os
+import signal
 from pathlib import Path
 
 # Add parent directory to path for imports
@@ -14,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from device_connectivity.camera import CameraDiscovery
 from api.services.camera_manager import CameraManager
 from api.routes import camera_routes, stream_routes
+from api.routes.faces import faces_bp
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -31,9 +34,14 @@ camera_manager = CameraManager()
 camera_routes.init_blueprint(camera_manager)
 stream_routes.init_blueprint(camera_manager)
 
+# Import and initialize faces blueprint with camera manager
+from api.routes import faces
+faces.set_camera_manager(camera_manager)
+
 # Register blueprints
 app.register_blueprint(camera_routes.bp)
 app.register_blueprint(stream_routes.bp)
+app.register_blueprint(faces_bp)
 
 @app.route('/')
 def index():
@@ -46,7 +54,10 @@ def index():
             'cameras': '/api/cameras',
             'open_camera': '/api/cameras/:id/open',
             'close_camera': '/api/cameras/:id/close',
-            'stream': '/stream/:id'
+            'stream': '/stream/:id',
+            'faces': '/api/faces',
+            'enroll_face': '/api/faces/enroll',
+            'face_stats': '/api/faces/stats'
         }
     })
 
@@ -57,6 +68,33 @@ def health():
         'status': 'healthy',
         'active_cameras': len(camera_manager.active_cameras)
     })
+
+@app.route('/api/shutdown', methods=['POST'])
+def shutdown():
+    """Shutdown the server"""
+    try:
+        # Close all active cameras
+        for camera_id in list(camera_manager.active_cameras.keys()):
+            camera_manager.close_camera(camera_id)
+
+        # Send response before shutting down
+        response = jsonify({
+            'status': 'shutting down',
+            'message': 'Server is shutting down...'
+        })
+
+        # Schedule shutdown after response is sent
+        def shutdown_server():
+            import time
+            time.sleep(1)  # Give time for response to be sent
+            os.kill(os.getpid(), signal.SIGINT)
+
+        import threading
+        threading.Thread(target=shutdown_server).start()
+
+        return response
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     print("=" * 70)
